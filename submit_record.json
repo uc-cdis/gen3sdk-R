@@ -1,0 +1,9 @@
+{
+    "projects":[{
+        "code": "proj1",
+        "dbgap_accession_number": "proj1",
+        "name": "proj1"
+    }],
+    "submitter_id":"22201",
+    "type":"experiment"
+}
