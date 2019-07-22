@@ -1,0 +1,10 @@
+Package: gen3sdk
+Type: Package
+Title: Gen3 API wrapper
+Version: 1.0
+Date: 2019-07-19
+Author: Center for Translational Data Science
+Maintainer: Center for Translational Data Science <maartenx01@uchicago.edu>
+Description: R sdk for Gen3 API
+License: MASS
+Depends: 
