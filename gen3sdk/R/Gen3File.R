@@ -41,6 +41,9 @@ Gen3File <- setRefClass("Gen3File",
             auth_token <- auth_provider$get_access_token()
             api_url <- paste(endpoint, "/user/data/download/", guid, "?protocol=", protocol, sep="")
             output <- GET(api_url, add_headers(Authorization = auth_token))
+            if (http_error(output)) {
+                stop(sprintf("Record not found: %s (GUID)", guid))
+            }
             return (output)
         }
     )
