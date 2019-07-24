@@ -9,7 +9,7 @@ link = "https://nci-crdc-demo.datacommons.io"
 auth <- Gen3AuthHelper(endpoint=link, refresh_file="credentials.json")
 
 sub <- Gen3Submission(endpoint=link, auth_provider=auth)
-
+file <- Gen3File(endpoint=link, auth_provider=auth)
 
 
 ########  Gen3Submission Tests  ########
