@@ -25,13 +25,19 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
     ),
 
     methods = list(
-        initialize = function(endpoint, refresh_file) {
+        initialize = function(endpoint="", refresh_file="") {
             .self$endpoint <- endpoint
             .self$refresh_file <- refresh_file
         },
         get_access_token = function() {
             # Returns the Authorization header value for the request.
             
+            if (.self$endpoint=="") {
+                stop("Missing endpoint")
+            }
+            if (.self$refresh_file=="") {
+                stop("Missing refresh file")
+            }
             tryCatch( { refresh_data <- fromJSON(refresh_file) },
                         error = function(e) {stop(sprintf("Could not load your refresh token file: %s", refresh_file))}
                     )
