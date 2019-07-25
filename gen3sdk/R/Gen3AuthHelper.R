@@ -25,6 +25,10 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
     ),
 
     methods = list(
+        initialize = function(endpoint, refresh_file) {
+            .self$endpoint <- endpoint
+            .self$refresh_file <- refresh_file
+        },
         get_access_token = function() {
             # Returns the Authorization header value for the request.
             
@@ -33,7 +37,7 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
                     )
             refresh_data <- fromJSON(refresh_file)
             refresh_token <- toJSON(refresh_data, auto_unbox = TRUE)
-            auth_url = paste(link, "/user/credentials/cdis/access_token", sep="")
+            auth_url = paste(endpoint, "/user/credentials/cdis/access_token", sep="")
             access_token_json <- POST(auth_url, body=refresh_token, encode = 'json')
             if (http_error(access_token_json)) {
                 stop(sprintf("Failed to authenticate %s", auth_url))
