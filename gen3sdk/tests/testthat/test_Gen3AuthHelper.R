@@ -32,15 +32,22 @@ test_that("Loading bad JSON credentials file", {
 })
 
 test_that("Fail to authenticate", {
+    #auth <- Gen3AuthHelper(endpoint=general, refresh_file="../../../../../sandbox/credentials.json")
     auth <- Gen3AuthHelper(endpoint=general, refresh_file="path/to/library/credentials.json")
     expect_error(auth$get_access_token())
 })
 
 test_that("Valid authenication", {
+    #auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="../../../../../sandbox/credentials.json")
     auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="path/to/library/credentials.json")
-    refresh_data <- fromJSON(auth$refresh_file)
-    refresh_token <- toJSON(refresh_data, auto_unbox = TRUE)
-    auth_url = paste(auth$endpoint, "/user/credentials/cdis/access_token", sep="")
-    access_token_json <- POST(auth_url, body=refresh_token, encode = 'json')
-    expect_equal(access_token_json$status, 200)
+    ret_val <- auth$get_access_token()
+    expect_equal(ret_val$status, 200)
+})
+
+test_that("Auth value", {
+    #auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="../../../../../sandbox/credentials.json")
+    auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="path/to/library/credentials.json")
+    ret_val <- auth$get_access_token()
+    auth_val <- auth$get_auth_value(ret_val)
+    expect_true(is.character(auth_val))
 })
