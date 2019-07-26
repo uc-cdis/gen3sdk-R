@@ -48,8 +48,11 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
             if (http_error(access_token_json)) {
                 stop(sprintf("Failed to authenticate %s", auth_url))
             }
-            access_token <- paste("Bearer ", content(access_token_json), sep="")
-            return (access_token)
+            return (access_token_json)
+        },
+        get_auth_value = function(access_token) {
+            auth_value <- paste("Bearer ", content(access_token), sep="")
+            return (auth_value)
         }
     )
 )
