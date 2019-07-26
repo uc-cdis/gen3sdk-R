@@ -44,6 +44,12 @@ test_that("Valid authenication", {
     expect_equal(ret_val$status, 200)
 })
 
+test_that("Auth value missing parameter", {
+    #auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="../../../../../sandbox/credentials.json")
+    auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="path/to/library/credentials.json")
+    expect_error(auth$get_auth_value())
+})
+
 test_that("Auth value", {
     #auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="../../../../../sandbox/credentials.json")
     auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="path/to/library/credentials.json")

@@ -29,9 +29,8 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
             .self$endpoint <- endpoint
             .self$refresh_file <- refresh_file
         },
+        
         get_access_token = function() {
-            # Returns the Authorization header value for the request.
-            
             if (.self$endpoint=="") {
                 stop("Missing endpoint")
             }
@@ -50,6 +49,7 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
             }
             return (access_token_json)
         },
+
         get_auth_value = function(access_token) {
             auth_value <- paste("Bearer ", content(access_token), sep="")
             return (auth_value)
