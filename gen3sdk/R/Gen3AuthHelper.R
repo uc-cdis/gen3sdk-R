@@ -17,7 +17,7 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
 #       This generates the Gen3Auth class pointed at the sandbox commons while
 #       using the credentials.json downloaded from the commons profile page.
 
-#       >>> auth = Gen3AuthHelper("https://nci-crdc-demo.datacommons.io", refresh_file="credentials.json")
+#       >>> auth <- Gen3AuthHelper("https://nci-crdc-demo.datacommons.io", refresh_file="credentials.json")
 
     fields = list(
         endpoint= "character",

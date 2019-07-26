@@ -18,9 +18,9 @@ Gen3Submission <- setRefClass("Gen3Submission",
 #   This generates the Gen3Submission class pointed at the sandbox commons while
 #   using the credentials.json downloaded from the commons profile page.
 
-#   >>> endpoint = "https://nci-crdc-demo.datacommons.io"
-#   ... auth = Gen3AuthHelper(endpoint, refresh_file="credentials.json")
-#   ... sub = Gen3Submission(endpoint, auth)
+#   >>> endpoint <- "https://nci-crdc-demo.datacommons.io"
+#   ... auth <- Gen3AuthHelper(endpoint, refresh_file="credentials.json")
+#   ... sub <- Gen3Submission(endpoint, auth)
 
     fields = list(
         endpoint= "character",
@@ -28,6 +28,11 @@ Gen3Submission <- setRefClass("Gen3Submission",
     ),
 
     methods = list(
+        initialize = function(endpoint, auth_provider) {
+            .self$endpoint <- endpoint
+            .self$auth_provider <- auth_provider
+        },
+
         export_json = function(filename, output) {
             # Writes an API response to a file.
             exportJson <- toJSON(output)
@@ -298,7 +303,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
             #   This executes a query to get the list of all the project codes for all the projects
             #   in the data commons.
 
-            # >>> query = "{ project(first:0) { code } }"
+            # >>> query <- "{ project(first:0) { code } }"
             # ... sub.query(query)
             auth_token <- auth_provider$get_access_token()
             api_url <- paste(endpoint, "/api/v0/submission/graphql", sep="")
