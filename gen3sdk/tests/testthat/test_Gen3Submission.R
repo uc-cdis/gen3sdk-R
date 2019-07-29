@@ -5,10 +5,10 @@ library(gen3sdk)
 library(jsonlite)
 library(httr)
 
-endpoint <- read_file("../../../../../sandbox/endpoint.txt")
-#endpoint <- read_file("path/to/library/endpoint.txt")
-auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="../../../../../sandbox/credentials.json")
-#auth <- Gen3AuthHelper(endpoint=general, refresh_file="path/to/library/credentials.json")
+#endpoint <- read_file("../../../../../sandbox/endpoint.txt")
+endpoint <- read_file("path/to/library/endpoint.txt")
+#auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="../../../../../sandbox/credentials.json")
+auth <- Gen3AuthHelper(endpoint=general, refresh_file="path/to/library/credentials.json")
 general <- "https://nci-crdc-demo.datacommons.io"
 sub <- Gen3Submission(endpoint=endpoint, auth_provider=auth)
 
