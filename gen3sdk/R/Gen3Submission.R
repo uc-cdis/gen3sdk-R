@@ -217,6 +217,13 @@ Gen3Submission <- setRefClass("Gen3Submission",
             return (output)
         },
 
+        export_record_helper = function(program, project, uuid, fileformat) {
+            auth_token <- auth_provider$get_auth_value(auth_provider$get_access_token())
+            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, "/export", sep="")
+            output <- GET(api_url, add_headers(Authorization = auth_token), query = list(ids = uuid, format = fileformat))
+            return (output)
+        },
+
         export_record = function(program, project, uuid, fileformat, filename="") {
             # Export a single record into json.
 
@@ -235,9 +242,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
             if(!(fileformat %in% list('json','tsv'))) {
                 stop("Error: File format must be either 'json' or 'tsv'")
             }
-            auth_token <- auth_provider$get_auth_value(auth_provider$get_access_token())
-            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, "/export", sep="")
-            output <- GET(api_url, add_headers(Authorization = auth_token), query = list(ids = uuid, format = fileformat))
+            output <- export_record_helper(program, project, uuid, fileformat)
             if(fileformat == 'json') {
                 json_content <- content(output, "parsed", "application/json")
                 if(filename!="") {
@@ -252,6 +257,13 @@ Gen3Submission <- setRefClass("Gen3Submission",
                 }
                 return (tsv_content)
             }
+        },
+
+        export_node_helper = function(program, project, node_type, fileformat) {
+            auth_token <- auth_provider$get_auth_value(auth_provider$get_access_token())
+            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, "/export", sep="")
+            output <- GET(api_url, add_headers(Authorization = auth_token), query = list(node_label = node_type, format = fileformat))
+            return (output)
         },
 
         export_node = function(program, project, node_type, fileformat, filename="") {
@@ -272,9 +284,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
             if(!(fileformat %in% list('json','tsv'))) {
                 stop("Error: File format must be either 'json' or 'tsv'")
             }
-            auth_token <- auth_provider$get_auth_value(auth_provider$get_access_token())
-            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, "/export/", sep="")
-            output <- GET(api_url, add_headers(Authorization = auth_token), query = list(node_label = node_type, format = fileformat))
+            output <- export_record_helper(program, project, node_type, fileformat)
             if(fileformat == 'json') {
                 json_content <- content(output, "parsed", "application/json")
                 if(filename!="") {
