@@ -1,2 +1,2 @@
 clean:
-	rm *.Rout .RData
+	rm *.Rout .RData *.txt *.json *.tsv
