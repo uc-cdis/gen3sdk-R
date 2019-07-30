@@ -5,8 +5,11 @@ library(gen3sdk)
 library(jsonlite)
 library(httr)
 
-#endpoint <- read_file("../../../../../sandbox/endpoint.txt")
+#endpoint <- read_file("../../../../sandbox/endpoint.txt")
 endpoint <- read_file("path/to/library/endpoint.txt")
+general <- "https://nci-crdc-demo.datacommons.io"
+#auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="../../../../sandbox/credentials.json")
+auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="path/to/library/credentials.json")
 general <- "https://nci-crdc-demo.datacommons.io"
 
 test_that("Parameter type check", {
@@ -32,27 +35,20 @@ test_that("Loading bad JSON credentials file", {
 })
 
 test_that("Fail to authenticate", {
-    #auth <- Gen3AuthHelper(endpoint=general, refresh_file="../../../../../sandbox/credentials.json")
-    auth <- Gen3AuthHelper(endpoint=general, refresh_file="path/to/library/credentials.json")
-    expect_error(auth$get_access_token())
+    bad_auth <- Gen3AuthHelper(endpoint=general, refresh_file="path/to/library/credentials.json")
+    expect_error(bad_auth$get_access_token())
 })
 
 test_that("Valid authenication", {
-    #auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="../../../../../sandbox/credentials.json")
-    auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="path/to/library/credentials.json")
     ret_val <- auth$get_access_token()
     expect_equal(ret_val$status, 200)
 })
 
 test_that("Auth value missing parameter", {
-    #auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="../../../../../sandbox/credentials.json")
-    auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="path/to/library/credentials.json")
     expect_error(auth$get_auth_value())
 })
 
 test_that("Auth value", {
-    #auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="../../../../../sandbox/credentials.json")
-    auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="path/to/library/credentials.json")
     ret_val <- auth$get_access_token()
     auth_val <- auth$get_auth_value(ret_val)
     expect_true(is.character(auth_val))
