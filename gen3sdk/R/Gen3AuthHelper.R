@@ -53,6 +53,11 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
         get_auth_value = function(access_token) {
             auth_value <- paste("Bearer ", content(access_token), sep="")
             return (auth_value)
+        },
+
+        get_token_value = function(access_token) {
+            auth_value <- content(access_token)$token
+            return (auth_value)
         }
     )
 )
