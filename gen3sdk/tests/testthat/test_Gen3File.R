@@ -10,7 +10,7 @@ endpoint <- read_file("path/to/library/endpoint.txt")
 #auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="../../../../sandbox/credentials.json")
 auth <- Gen3AuthHelper(endpoint=general, refresh_file="path/to/library/credentials.json")
 general <- "https://nci-crdc-demo.datacommons.io"
-#guid <- read_file("../../../../sandbox/guid.txt")
+#guid <- read_file("../../../../sandbox/file_guid.txt")
 guid <- "<GUID>"
 
 test_that("Parameter type check", {
