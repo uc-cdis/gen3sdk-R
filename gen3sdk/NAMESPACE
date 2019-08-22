@@ -1,6 +1,6 @@
 exportPattern("^[[:alpha:]]+")
 exportClasses(
     "Gen3File",
-     "Gen3AuthHelper",
-     "Gen3Submission" 
+    "Gen3AuthHelper",
+    "Gen3Submission" 
 )

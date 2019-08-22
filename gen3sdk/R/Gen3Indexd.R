@@ -43,7 +43,7 @@ Gen3Indexd <- setRefClass("Gen3Indexd",
 
             # Examples:
             # >>> ind.get_system_version()
-            api_url <- paste(endpoint, "/index/_status", sep="")
+            api_url <- paste(endpoint, "/index/_version", sep="")
             output <- GET(api_url)
             return (output)
         },
@@ -52,7 +52,7 @@ Gen3Indexd <- setRefClass("Gen3Indexd",
 
             # Examples:
             # >>> ind.get_system_stats()
-            api_url <- paste(endpoint, "/index/_status", sep="")
+            api_url <- paste(endpoint, "/index/_stats", sep="")
             output <- GET(api_url)
             return (output)
         },
@@ -93,7 +93,7 @@ Gen3Indexd <- setRefClass("Gen3Indexd",
             # This adds a new entry in the sandbox index
 
             # >>> ind.post_index(body)
-            auth_token <- auth_provider$get_auth_value(auth_provider$get_access_token())
+            auth_token <- auth_provider$get_auth_value()
             body$authz <- list(body$authz)
             json_body <- toJSON(body, auto_unbox = TRUE)
             api_url <- paste(endpoint, "/index/index", sep="")
@@ -150,7 +150,7 @@ Gen3Indexd <- setRefClass("Gen3Indexd",
             # This adds a new verion of the document anchored by baseid
 
             # >>> ind.post_index_guid(guid, body)
-            auth_token <- auth_provider$get_auth_value(auth_provider$get_access_token())
+            auth_token <- auth_provider$get_auth_value()
             body$authz <- list(body$authz)
             json_body <- toJSON(body, auto_unbox = TRUE)
             api_url <- paste(endpoint, "/index/index/", guid, sep="")
@@ -168,7 +168,7 @@ Gen3Indexd <- setRefClass("Gen3Indexd",
             # This updates the record
 
             # >>> ind.put_index_guid(guid, rev, body)
-            auth_token <- auth_provider$get_auth_value(auth_provider$get_access_token())
+            auth_token <- auth_provider$get_auth_value()
             body$authz <- list(body$authz)
             body$urls <- list(body$urls)
             json_body <- toJSON(body, auto_unbox = TRUE)
@@ -186,7 +186,7 @@ Gen3Indexd <- setRefClass("Gen3Indexd",
             # This deletes the record
 
             # >>> ind.delete_index_guid(guid, rev)
-            auth_token <- auth_provider$get_auth_value(auth_provider$get_access_token())
+            auth_token <- auth_provider$get_auth_value()
             api_url <- paste(endpoint, "/index/index/", guid, sep="")
             output <- DELETE(api_url, add_headers(Authorization = auth_token), query = list(rev = rev))
             return (output)

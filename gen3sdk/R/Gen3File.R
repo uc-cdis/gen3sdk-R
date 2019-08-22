@@ -30,27 +30,22 @@ Gen3File <- setRefClass("Gen3File",
             .self$auth_provider <- auth_provider
         },
 
-        get_presigned_url = function(guid="", protocol="http") {
-        # Generates a presigned URL for a file.
+        get_presigned_url = function(guid, protocol="http") {
+            # Generates a presigned URL for a file.
 
-        # Retrieves a presigned url for a file giving access to a file for a limited time.
+            # Retrieves a presigned url for a file giving access to a file for a limited time.
 
-        # Args:
-        #     guid (str): The GUID for the object to retrieve.
-        #     protocol (:obj:`str`, optional): The protocol to use for picking the available URL for generating the presigned URL.
+            # Args:
+            #     guid (str): The GUID for the object to retrieve.
+            #     protocol (:obj:`str`, optional): The protocol to use for picking the available URL for generating the presigned URL.
 
-        # Examples:
+            # Examples:
 
-        #     >>> file.get_presigned_url(query)
-            if (guid=="") {
-                stop("Missing GUID")
-            }
-            auth_token <- auth_provider$get_auth_value(auth_provider$get_access_token())
+            #     >>> file.get_presigned_url(guid)
+
+            auth_token <- auth_provider$get_auth_value()
             api_url <- paste(endpoint, "/user/data/download/", guid, sep="")
             output <- GET(api_url, add_headers(Authorization = auth_token), query = list(protocol=protocol))
-            if (http_error(output)) {
-                stop(sprintf("Record not found: %s (GUID)", guid))
-            }
             return (output)
         }
     )

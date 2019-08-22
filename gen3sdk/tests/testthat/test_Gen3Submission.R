@@ -1,238 +1,155 @@
 library(testthat)
-library(stringr)
 library(readr)
-library(gen3sdk)
 library(jsonlite)
 library(httr)
+library(httptest)
+library(gen3sdk)
 
-#endpoint <- read_file("../../../../sandbox/endpoint.txt")
-endpoint <- read_file("path/to/library/endpoint.txt")
-#auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="../../../../sandbox/credentials.json")
-auth <- Gen3AuthHelper(endpoint=general, refresh_file="path/to/library/credentials.json")
-general <- "https://nci-crdc-demo.datacommons.io"
-sub <- Gen3Submission(endpoint=endpoint, auth_provider=auth)
+
+GEN3_ENDPOINT="~/.gen3/endpoint.txt"
+GEN3_AUTH_TOKEN="~/.gen3/auth_token.txt"
+GEN3_BODY_JSON="~/.gen3/body.json"
+GEN3_UUID="~/.gen3/uuid.txt"
+GEN3_QUERY_TXT="~/.gen3/query.txt"
+
+endpoint <- read_file(GEN3_ENDPOINT)
+auth_token <- read_file(GEN3_AUTH_TOKEN)
+json_parameter <- fromJSON(GEN3_BODY_JSON)
+uuid <- read_file(GEN3_UUID)
+query_txt <- read_file(GEN3_QUERY_TXT)
+program <- "lorem"
+project <- "ipsum"
+node_type <- "_all"
+fileformat <- "json"
+
 
 test_that("Parameter type check", {
     expect_error(Gen3Submission(endpoint=5))
     expect_error(Gen3Submission(auth_provider=3.14))
 })
 
-test_that("Missing Initialization Parameter", {
+test_that("Missing initialization parameter", {
     expect_error(Gen3Submission())
     expect_error(Gen3Submission(endpoint=endpoint))
-    expect_error(Gen3Submission(auth_provider=auth))
 })
 
-test_that("get_dictionary_node: no parameter", {
-    ret_val <- sub$get_dictionary_node("")
-    expect_equal(ret_val$status, 200)
+with_mock_api({
+    test_that("Mock test: create program", {
+        api_url <- paste(endpoint, "/api/v0/submission/", sep="")
+        json_body <- toJSON(json_parameter, auto_unbox = TRUE)
+        expect_POST(
+            POST(api_url, add_headers(Authorization = auth_token), body = json_body, encode = 'json'),
+            api_url
+        )
+    })
 })
 
-test_that("get_dictionary_node: invalid parameter", {
-    ret_val <- sub$get_dictionary_node("querty")
-    expect_equal(ret_val$status, 404)
+with_mock_api({
+    test_that("Mock test: create project", {
+        api_url <- paste(endpoint, "/api/v0/submission/", program, sep="")
+        json_body <- toJSON(json_parameter, auto_unbox = TRUE)
+        expect_PUT(
+            PUT(api_url, add_headers(Authorization = auth_token), body = json_body, encode = 'json'),
+            api_url
+        )
+    })
 })
 
-test_that("get_dictionary_node: vaild parameter", {
-    ret_val <- sub$get_dictionary_node("program")
-    expect_equal(ret_val$status, 200)
+with_mock_api({
+    test_that("Mock test: delete project", {
+        api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, sep="")
+        expect_DELETE(
+            DELETE(api_url, add_headers(Authorization = auth_token)),
+            api_url
+        )
+    })
 })
 
-test_that("get_dictionary_all", {
-    ret_val <- sub$get_dictionary_all()
-    expect_equal(ret_val$status, 200)
+with_mock_api({
+    test_that("Mock test: delete program", {
+        api_url <- paste(endpoint, "/api/v0/submission/", program, sep="")
+        expect_DELETE(
+            DELETE(api_url, add_headers(Authorization = auth_token)),
+            api_url
+        )
+    })
 })
 
-test_that("get_dictionary_all", {
-    ret_val <- sub$get_graphql_schema()
-    expect_equal(ret_val$status, 200)
+with_mock_api({
+    test_that("Mock test: get dictionary node", {
+        api_url <- paste(endpoint, "/api/v0/submission/_dictionary/", node_type, sep="")
+        expect_GET(
+            GET(api_url),
+            api_url
+        )
+    })
 })
 
-test_that("query: invalid authentication", {
-    query <- '{ project(first:0) { code } }'
-    ret_val <- sub$query(query)
-    expect_equal(ret_val$status, 200)
+with_mock_api({
+    test_that("Mock test: get graphql schema", {
+        api_url <- paste(endpoint, "/api/v0/submission/getschema", sep="")
+        expect_GET(
+            GET(api_url),
+            api_url
+        )
+    })
 })
 
-test_that("query: invalid parameter", {
-    query <- "querty"
-    ret_val <- sub$query(query)
-    expect_equal(ret_val$status, 400)
+with_mock_api({
+    test_that("Mock test: submit record", {
+        api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, sep="")
+        json_body <- toJSON(json_parameter, auto_unbox = TRUE)
+        expect_PUT(
+            PUT(api_url, add_headers(Authorization = auth_token), body = json_body, encode = 'json'),
+            api_url
+        )
+    })
 })
 
-test_that("query: empty parameter", {
-    query <- ""
-    ret_val <- sub$query(query)
-    expect_equal(ret_val$status, 400)
+with_mock_api({
+    test_that("Mock test: delete record", {
+        api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, "/entities/", uuid, sep="")
+        expect_DELETE(
+            DELETE(api_url, add_headers(Authorization = auth_token)),
+            api_url
+        )
+    })
 })
 
-test_that("query: vaild parameter", {
-    query <- "{ project(first:0) { code } }"
-    ret_val <- sub$query(query)
-    expect_equal(ret_val$status, 200)
+with_mock_api({
+    test_that("Mock test: export record", {
+        api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, "/export", sep="")
+        expect_GET(
+            GET(api_url, add_headers(Authorization = auth_token), query = list(ids = uuid, format = fileformat)),
+            api_url
+        )
+    })
 })
 
-test_that("create_program: valid parameter", {
-    json_data <- fromJSON('{"dbgap_accession_number": "prog42", "name": "prog42", "type": "program"}')
-    ret_val <- sub$create_program(json_data)
-    expect_equal(ret_val$status, 200)
+with_mock_api({
+    test_that("Mock test: export node", {
+        api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, "/export", sep="")
+        expect_GET(
+            GET(api_url, add_headers(Authorization = auth_token), query = list(node_label = node_type, format = fileformat)),
+            api_url
+        )
+    })
 })
 
-test_that("create_project: valid parameter", {
-    json_prog <- fromJSON('{"dbgap_accession_number": "prog43", "name": "prog43", "type": "program"}')
-    ret_val <- sub$create_program(json_prog)
-    expect_equal(ret_val$status, 200)
-    json_proj <- fromJSON('{"code": "proj43", "dbgap_accession_number": "proj43", "investigator_name": "jones", "name": "proj43", "type": "project"}')
-    ret_val <- sub$create_project("prog43", json_proj)
-    expect_equal(ret_val$status, 200)
-})
-
-test_that("delete_project: valid parameter", {
-    json_prog <- fromJSON('{"dbgap_accession_number": "prog44", "name": "prog44", "type": "program"}')
-    ret_val <- sub$create_program(json_prog)
-    expect_equal(ret_val$status, 200)
-    json_proj <- fromJSON('{"code": "proj44", "dbgap_accession_number": "proj44", "investigator_name": "jones", "name": "proj44", "type": "project"}')
-    ret_val <- sub$create_project("prog44", json_proj)
-    expect_equal(ret_val$status, 200)
-    ret_val <- sub$delete_project("prog44", "proj44")
-    expect_equal(ret_val$status, 204)
-})
-
-test_that("delete_program: valid parameter", {
-    json_prog <- fromJSON('{"dbgap_accession_number": "prog45", "name": "prog45", "type": "program"}')
-    ret_val <- sub$create_program(json_prog)
-    expect_equal(ret_val$status, 200)
-    json_proj <- fromJSON('{"code": "proj45", "dbgap_accession_number": "proj45", "investigator_name": "jones", "name": "proj45", "type": "project"}')
-    ret_val <- sub$create_project("prog45", json_proj)
-    expect_equal(ret_val$status, 200)
-    ret_val <- sub$delete_project("prog45", "proj45")
-    expect_equal(ret_val$status, 204)
-    ret_val <- sub$delete_program("prog45")
-    expect_equal(ret_val$status, 204)
-})
-
-### Test only passes with 'prog1', 'proj1' ###
-test_that("submit_record: valid parameter", {
-    json_prog <- fromJSON('{"dbgap_accession_number": "prog1", "name": "prog1", "type": "program"}')
-    ret_val <- sub$create_program(json_prog)
-    expect_equal(ret_val$status, 200)
-    json_proj <- fromJSON('{"code": "proj1", "dbgap_accession_number": "proj1", "investigator_name": "jones", "name": "proj1", "type": "project", "availability_type": "Open"}')
-    ret_val <- sub$create_project("prog1", json_proj)
-    expect_equal(ret_val$status, 200)
-    json_data <- fromJSON('
-                            {
-                                "projects":[{
-                                    "code": "proj1",
-                                    "dbgap_accession_number": "proj1",
-                                    "name": "proj1"
-                                }],
-                                "submitter_id":"60637",
-                                "type":"experiment"
-                            }
-                          '
-                         )
-    ret_val <- sub$submit_record("prog1", "proj1", json_data)
-    expect_equal(ret_val$status, 200)
-})
-
-test_that("delete_record: valid parameter", {
-    json_prog <- fromJSON('{"dbgap_accession_number": "prog1", "name": "prog1", "type": "program"}')
-    ret_val <- sub$create_program(json_prog)
-    expect_equal(ret_val$status, 200)
-    json_proj <- fromJSON('{"code": "proj1", "dbgap_accession_number": "proj1", "investigator_name": "jones", "name": "proj1", "type": "project", "availability_type": "Open"}')
-    ret_val <- sub$create_project("prog1", json_proj)
-    expect_equal(ret_val$status, 200)
-    json_data <- fromJSON('
-                            {
-                                "projects":[{
-                                    "code": "proj1",
-                                    "dbgap_accession_number": "proj1",
-                                    "name": "proj1"
-                                }],
-                                "submitter_id":"6037",
-                                "type":"experiment"
-                            }
-                          '
-                         )
-    ret_val <- sub$submit_record("prog1", "proj1", json_data)
-    expect_equal(ret_val$status, 200)
-    print(ret_val)
-    record_table <- content(ret_val)
-    print(record_table$entities[[1]]$id)
-    ret_val <- sub$delete_record("prog1", "proj1", record_table$entities[[1]]$id)
-    expect_equal(ret_val$status, 200)
-})
-
-test_that("export_record (json): valid parameter", {
-    json_prog <- fromJSON('{"dbgap_accession_number": "prog1", "name": "prog1", "type": "program"}')
-    ret_val <- sub$create_program(json_prog)
-    expect_equal(ret_val$status, 200)
-    json_proj <- fromJSON('{"code": "proj1", "dbgap_accession_number": "proj1", "investigator_name": "jones", "name": "proj1", "type": "project", "availability_type": "Open"}')
-    ret_val <- sub$create_project("prog1", json_proj)
-    expect_equal(ret_val$status, 200)
-    json_data <- fromJSON('
-                            {
-                                "projects":[{
-                                    "code": "proj1",
-                                    "dbgap_accession_number": "proj1",
-                                    "name": "proj1"
-                                }],
-                                "submitter_id":"60637",
-                                "type":"experiment"
-                            }
-                          '
-                         )
-    ret_val <- sub$submit_record("prog1", "proj1", json_data)
-    expect_equal(ret_val$status, 200)
-    record_table <- content(ret_val)
-    ret_val <- sub$export_record_helper("prog1", "proj1", record_table$entities[[1]]$id, "json")
-    expect_equal(ret_val$status, 200)
-})
-
-test_that("export_record (tsv): valid parameter", {
-    json_prog <- fromJSON('{"dbgap_accession_number": "prog1", "name": "prog1", "type": "program"}')
-    ret_val <- sub$create_program(json_prog)
-    expect_equal(ret_val$status, 200)
-    json_proj <- fromJSON('{"code": "proj1", "dbgap_accession_number": "proj1", "investigator_name": "jones", "name": "proj1", "type": "project", "availability_type": "Open"}')
-    ret_val <- sub$create_project("prog1", json_proj)
-    expect_equal(ret_val$status, 200)
-    json_data <- fromJSON('
-                            {
-                                "projects":[{
-                                    "code": "proj1",
-                                    "dbgap_accession_number": "proj1",
-                                    "name": "proj1"
-                                }],
-                                "submitter_id":"60637",
-                                "type":"experiment"
-                            }
-                          '
-                         )
-    ret_val <- sub$submit_record("prog1", "proj1", json_data)
-    expect_equal(ret_val$status, 200)
-    record_table <- content(ret_val)
-    ret_val <- sub$export_record_helper("prog1", "proj1", record_table$entities[[1]]$id, "tsv")
-    expect_equal(ret_val$status, 200)
-})
-
-test_that("export_node (json): valid parameter", {
-    json_prog <- fromJSON('{"dbgap_accession_number": "prog1", "name": "prog1", "type": "program"}')
-    ret_val <- sub$create_program(json_prog)
-    expect_equal(ret_val$status, 200)
-    json_proj <- fromJSON('{"code": "proj1", "dbgap_accession_number": "proj1", "investigator_name": "jones", "name": "proj1", "type": "project", "availability_type": "Open"}')
-    ret_val <- sub$create_project("prog1", json_proj)
-    expect_equal(ret_val$status, 200)
-    ret_val <- sub$export_node_helper("prog1", "proj1", "program", "json")
-    expect_equal(ret_val$status, 200)
-})
-
-test_that("export_node (json): valid parameter", {
-    json_prog <- fromJSON('{"dbgap_accession_number": "prog1", "name": "prog1", "type": "program"}')
-    ret_val <- sub$create_program(json_prog)
-    expect_equal(ret_val$status, 200)
-    json_proj <- fromJSON('{"code": "proj1", "dbgap_accession_number": "proj1", "investigator_name": "jones", "name": "proj1", "type": "project", "availability_type": "Open"}')
-    ret_val <- sub$create_project("prog1", json_proj)
-    expect_equal(ret_val$status, 200)
-    ret_val <- sub$export_node_helper("prog1", "proj1", "program", "tsv")
-    expect_equal(ret_val$status, 200)
+with_mock_api({
+    test_that("Mock test: query", {
+        variables <- ""
+        api_url <- paste(endpoint, "/api/v0/submission/graphql", sep="")
+        if(variables=="") {
+            query <- paste('{"query": "', query_txt, '"}', sep='')
+        } else {
+            query <- paste('{"query": "', query_txt, '"variables": "', variables, '"}', sep="")
+        }
+        query_body <- fromJSON(query)
+        json_body <- toJSON(query_body, auto_unbox = TRUE)
+        expect_POST(
+            POST(api_url, add_headers(Authorization = auth_token), body = json_body, encode = 'json'),
+            api_url
+        )
+    })
 })

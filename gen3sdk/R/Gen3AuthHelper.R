@@ -31,12 +31,7 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
         },
         
         get_access_token = function() {
-            if (.self$endpoint=="") {
-                stop("Missing endpoint")
-            }
-            if (.self$refresh_file=="") {
-                stop("Missing refresh file")
-            }
+
             tryCatch( { refresh_data <- fromJSON(refresh_file) },
                         error = function(e) {stop(sprintf("Could not load your refresh token file: %s", refresh_file))}
                     )
@@ -50,13 +45,9 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
             return (access_token_json)
         },
 
-        get_auth_value = function(access_token) {
-            auth_value <- paste("Bearer ", content(access_token), sep="")
-            return (auth_value)
-        },
-
-        get_token_value = function(access_token) {
-            auth_value <- content(access_token)$token
+        get_auth_value = function() {
+            token <- get_access_token()
+            auth_value <- paste("Bearer ", content(token), sep="")
             return (auth_value)
         }
     )

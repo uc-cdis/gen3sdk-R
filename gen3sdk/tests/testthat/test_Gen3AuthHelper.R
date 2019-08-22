@@ -1,16 +1,16 @@
 library(testthat)
-library(stringr)
 library(readr)
-library(gen3sdk)
 library(jsonlite)
 library(httr)
+library(httptest)
+library(gen3sdk)
 
-#endpoint <- read_file("../../../../sandbox/endpoint.txt")
-endpoint <- read_file("path/to/library/endpoint.txt")
-general <- "https://nci-crdc-demo.datacommons.io"
-#auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="../../../../sandbox/credentials.json")
-auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="path/to/library/credentials.json")
-general <- "https://nci-crdc-demo.datacommons.io"
+
+GEN3_ENDPOINT="~/.gen3/endpoint.txt"
+GEN3_CREDENTIALS="~/.gen3/credentials.json"
+
+endpoint <- read_file(GEN3_ENDPOINT)
+
 
 test_that("Parameter type check", {
     expect_error(Gen3AuthHelper(endpoint=5))
@@ -23,33 +23,20 @@ test_that("Parameter initialization", {
     expect_equal(auth$refresh_file, "string")
 })
 
-test_that("Missing Parameter", {
+test_that("Missing parameter", {
     expect_error(Gen3AuthHelper()$get_access_token())
     expect_error(Gen3AuthHelper(endpoint=endpoint)$get_access_token())
     expect_error(Gen3AuthHelper(refresh_file="dummy.json")$get_access_token())
 })
 
-test_that("Loading bad JSON credentials file", {
-    auth <- Gen3AuthHelper(endpoint=endpoint, refresh_file="nonexist.json")
-    expect_error(auth$get_access_token())
-})
-
-test_that("Fail to authenticate", {
-    bad_auth <- Gen3AuthHelper(endpoint=general, refresh_file="path/to/library/credentials.json")
-    expect_error(bad_auth$get_access_token())
-})
-
-test_that("Valid authenication", {
-    ret_val <- auth$get_access_token()
-    expect_equal(ret_val$status, 200)
-})
-
-test_that("Auth value missing parameter", {
-    expect_error(auth$get_auth_value())
-})
-
-test_that("Auth value", {
-    ret_val <- auth$get_access_token()
-    auth_val <- auth$get_auth_value(ret_val)
-    expect_true(is.character(auth_val))
+with_mock_api({
+    test_that("Mock test: get access token", {
+        refresh_data <- fromJSON(GEN3_CREDENTIALS)
+        refresh_token <- toJSON(refresh_data, auto_unbox = TRUE)
+        auth_url = paste(endpoint, "/user/credentials/cdis/access_token", sep="")
+        expect_POST(
+            POST(auth_url, body=refresh_token, encode = 'json'),
+            auth_url
+        )
+    })
 })
