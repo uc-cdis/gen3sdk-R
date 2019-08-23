@@ -23,8 +23,8 @@ Gen3Submission <- setRefClass("Gen3Submission",
 #   ... sub <- Gen3Submission(endpoint, auth)
 
     fields = list(
-        endpoint= "character",
-        auth_provider= "Gen3AuthHelper"
+        endpoint = "character",
+        auth_provider = "Gen3AuthHelper"
     ),
 
     methods = list(
@@ -36,14 +36,14 @@ Gen3Submission <- setRefClass("Gen3Submission",
         export_json = function(filename, output) {
             # Writes an API response to a file.
             exportJson <- toJSON(output)
-            write(exportJson, file=filename)
+            write(exportJson, file = filename)
             print(paste("Output written to file:",filename))
         },
 
         export_tsv = function(filename, output) {
             # Writes an API response to a file.
-            write.table(output, file=filename, quote=FALSE, sep='\t')
-            print(paste("Output written to file:",filename))
+            write.table(output, file = filename, quote=FALSE, sep = '\t')
+            print(paste("Output written to file:", filename))
         },
 
         create_program = function(json_parameter) {
@@ -57,7 +57,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
             # >>> sub.create_program(json_parameter)
 
             auth_token <- auth_provider$get_auth_value()
-            api_url <- paste(endpoint, "/api/v0/submission/", sep="")
+            api_url <- paste(endpoint, "/api/v0/submission/", sep = "")
             json_body <- toJSON(json_parameter, auto_unbox = TRUE)
             output <- POST(api_url,
                          add_headers(Authorization = auth_token),
@@ -79,7 +79,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
             # >>> sub.create_project("DCF", json)
 
             auth_token <- auth_provider$get_auth_value()
-            api_url <- paste(endpoint, "/api/v0/submission/", program, sep="")
+            api_url <- paste(endpoint, "/api/v0/submission/", program, sep = "")
             json_body <- toJSON(json_parameter, auto_unbox = TRUE)
             output <- PUT(api_url,
                         add_headers(Authorization = auth_token),
@@ -104,7 +104,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
             # >>> sub.delete_project("DCF", "CCLE")
 
             auth_token <- auth_provider$get_auth_value()
-            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, sep="")
+            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, sep = "")
             output <- DELETE(api_url, add_headers(Authorization = auth_token))
             return (output)
         },
@@ -123,7 +123,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
             # >>> sub.delete_program("DCF")
 
             auth_token <- auth_provider$get_auth_value()
-            api_url <- paste(endpoint, "/api/v0/submission/", program, sep="")
+            api_url <- paste(endpoint, "/api/v0/submission/", program, sep = "")
             output <- DELETE(api_url, add_headers(Authorization = auth_token))
             return (output)
         },
@@ -141,7 +141,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
 
             # >>> sub.get_dictionary_node("subject")
 
-            api_url <- paste(endpoint, "/api/v0/submission/_dictionary/", node_type, sep="")
+            api_url <- paste(endpoint, "/api/v0/submission/_dictionary/", node_type, sep = "")
             output <- GET(api_url)
             return (output)
         },
@@ -170,7 +170,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
 
             # >>> sub.get_graphql_schema()
 
-            api_url <- paste(endpoint, "/api/v0/submission/getschema", sep="")
+            api_url <- paste(endpoint, "/api/v0/submission/getschema", sep = "")
             output <- GET(api_url)
             return (output)
         },
@@ -189,7 +189,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
             # >>> sub.submit_record("DCF", "CCLE", json)
 
             auth_token <- auth_provider$get_auth_value()
-            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, sep="")
+            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, sep = "")
             json_body <- toJSON(json_parameter, auto_unbox = TRUE)
             output <- PUT(api_url,
                          add_headers(Authorization = auth_token),
@@ -212,14 +212,14 @@ Gen3Submission <- setRefClass("Gen3Submission",
             # >>> sub.delete_record("DCF", "CCLE", uuid)
 
             auth_token <- auth_provider$get_auth_value()
-            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, "/entities/", uuid, sep="")
+            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, "/entities/", uuid, sep = "")
             output <- DELETE(api_url, add_headers(Authorization = auth_token))
             return (output)
         },
 
         export_record_helper = function(program, project, uuid, fileformat) {
             auth_token <- auth_provider$get_auth_value()
-            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, "/export", sep="")
+            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, "/export", sep = "")
             output <- GET(api_url, add_headers(Authorization = auth_token), query = list(ids = uuid, format = fileformat))
             return (output)
         },
@@ -245,14 +245,14 @@ Gen3Submission <- setRefClass("Gen3Submission",
             output <- export_record_helper(program, project, uuid, fileformat)
             if(fileformat == 'json') {
                 json_content <- content(output, "parsed", "application/json")
-                if(filename!="") {
+                if(filename! = "") {
                     export_json(filename, json_content)
                 }
                 return (json_content)
             } else {
                 text_content <- content(output, as = "text")
                 tsv_content <- read_tsv(text_content)
-                if(filename!="") {
+                if(filename! = "") {
                     export_tsv(filename, tsv_content)
                 }
                 return (tsv_content)
@@ -261,12 +261,12 @@ Gen3Submission <- setRefClass("Gen3Submission",
 
         export_node_helper = function(program, project, node_type, fileformat) {
             auth_token <- auth_provider$get_auth_value()
-            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, "/export", sep="")
+            api_url <- paste(endpoint, "/api/v0/submission/", program, "/", project, "/export", sep = "")
             output <- GET(api_url, add_headers(Authorization = auth_token), query = list(node_label = node_type, format = fileformat))
             return (output)
         },
 
-        export_node = function(program, project, node_type, fileformat, filename="") {
+        export_node = function(program, project, node_type, fileformat, filename = "") {
             # Export all records in a single node type of a project.
 
             # Args:
@@ -287,21 +287,21 @@ Gen3Submission <- setRefClass("Gen3Submission",
             output <- export_record_helper(program, project, node_type, fileformat)
             if(fileformat == 'json') {
                 json_content <- content(output, "parsed", "application/json")
-                if(filename!="") {
+                if(filename! = "") {
                     export_json(filename, json_content)
                 }
                 return (json_content)
             } else {
                 text_content <- content(output, as = "text")
                 tsv_content <- read_tsv(text_content)
-                if(filename!="") {
+                if(filename! = "") {
                     export_tsv(filename, tsv_content)
                 }
                 return (tsv_content)
             }
         },
 
-        query = function(query_txt, variables="") {
+        query = function(query_txt, variables = "") {
             # Execute a GraphQL query against a data commons.
 
             # Args:
@@ -316,11 +316,11 @@ Gen3Submission <- setRefClass("Gen3Submission",
             # >>> query <- "{ project(first:0) { code } }"
             # ... sub.query(query)
             auth_token <- auth_provider$get_auth_value()
-            api_url <- paste(endpoint, "/api/v0/submission/graphql", sep="")
-            if(variables=="") {
-                query <- paste('{"query": "', query_txt, '"}', sep='')
+            api_url <- paste(endpoint, "/api/v0/submission/graphql", sep = "")
+            if(variables == "") {
+                query <- paste('{"query": "', query_txt, '"}', sep = '')
             } else {
-                query <- paste('{"query": "', query_txt, '"variables": "', variables, '"}', sep="")
+                query <- paste('{"query": "', query_txt, '"variables": "', variables, '"}', sep = "")
             }
             query_body <- fromJSON(query)
             json_body <- toJSON(query_body, auto_unbox = TRUE)

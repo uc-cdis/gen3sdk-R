@@ -20,8 +20,8 @@ Gen3File <- setRefClass("Gen3File",
 #     ... file <- Gen3File(endpoint, auth)
 
     fields = list(
-        endpoint= "character",
-        auth_provider= "Gen3AuthHelper"
+        endpoint = "character",
+        auth_provider = "Gen3AuthHelper"
     ),
 
     methods = list(
@@ -30,7 +30,7 @@ Gen3File <- setRefClass("Gen3File",
             .self$auth_provider <- auth_provider
         },
 
-        get_presigned_url = function(guid, protocol="http") {
+        get_presigned_url = function(guid, protocol = "http") {
             # Generates a presigned URL for a file.
 
             # Retrieves a presigned url for a file giving access to a file for a limited time.
@@ -44,8 +44,8 @@ Gen3File <- setRefClass("Gen3File",
             #     >>> file.get_presigned_url(guid)
 
             auth_token <- auth_provider$get_auth_value()
-            api_url <- paste(endpoint, "/user/data/download/", guid, sep="")
-            output <- GET(api_url, add_headers(Authorization = auth_token), query = list(protocol=protocol))
+            api_url <- paste(endpoint, "/user/data/download/", guid, sep = "")
+            output <- GET(api_url, add_headers(Authorization = auth_token), query = list(protocol = protocol))
             return (output)
         }
     )
