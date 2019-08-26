@@ -1,23 +1,27 @@
 library(httr)
 library(jsonlite)
 
+
 Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
 
-# Gen3 auth helper class for use with requests auth.
+#' @field endpoint
+#' @title Gen3 auth helper class for use with httr auth.
 
-# Implements requests.auth.AuthBase in order to support JWT authentication.
-# Generates access tokens from the provided refresh token file or string.
-# Automatically refreshes access tokens when they expire.
+#' @description
+#' Implements httr in order to support JWT authentication.
+#' Generates access tokens from the provided refresh token file.
 
-# Args:
-#   endpoint (str): The URL of the data commons.
-#   refresh_file (str): The file containing the downloaded json web token.
+#' @param
+#' Args:
+#'   endpoint (str): The URL of the data commons.
+#'   refresh_file (str): The file containing the downloaded json web token.
 
-#   Examples:
-#       This generates the Gen3Auth class pointed at the sandbox commons while
-#       using the credentials.json downloaded from the commons profile page.
+#' @usage
+#' Examples:
+#'   This generates the Gen3Auth class pointed at the sandbox commons while
+#'   using the credentials.json downloaded from the commons profile page.
 
-#       >>> auth <- Gen3AuthHelper("https://nci-crdc-demo.datacommons.io", refresh_file="credentials.json")
+#'       >>> auth <- Gen3AuthHelper("https://nci-crdc-demo.datacommons.io", refresh_file="credentials.json")
 
     fields = list(
         endpoint = "character",
@@ -31,6 +35,10 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
         },
         
         get_access_token = function() {
+#' @description
+#' This retrieves the access token
+#' @usage
+#' >>> auth.get_access_token()
             if (.self$endpoint == "") {
                 stop("Missing endpoint")
             }
@@ -51,6 +59,10 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
         },
 
         get_auth_value = function() {
+#' @description
+#' This returns the authenication value in 'Bearer <token>' format 
+#' @usage
+#' >>> auth.get_auth_value()
             token <- get_access_token()
             auth_value <- paste("Bearer ", content(token), sep = "")
             return (auth_value)
