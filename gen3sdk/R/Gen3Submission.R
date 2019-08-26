@@ -33,19 +33,6 @@ Gen3Submission <- setRefClass("Gen3Submission",
             .self$auth_provider <- auth_provider
         },
 
-        export_json = function(filename, output) {
-            # Writes an API response to a file.
-            exportJson <- toJSON(output)
-            write(exportJson, file = filename)
-            print(paste("Output written to file:",filename))
-        },
-
-        export_tsv = function(filename, output) {
-            # Writes an API response to a file.
-            write.table(output, file = filename, quote=FALSE, sep = '\t')
-            print(paste("Output written to file:", filename))
-        },
-
         create_program = function(json_parameter) {
             # Create a program.
             # Args:
@@ -244,18 +231,26 @@ Gen3Submission <- setRefClass("Gen3Submission",
             }
             output <- export_record_helper(program, project, uuid, fileformat)
             if(fileformat == 'json') {
-                json_content <- content(output, "parsed", "application/json")
-                if(filename! = "") {
-                    export_json(filename, json_content)
+                if(filename != "") {
+                    binary_output <- content(output)
+                    f = file(filename, "wb")
+                    writeBin(binary_output, f)
+                    return (paste("Response written to", filename))
+                } else {
+                    json_content <- content(output, "parsed", "application/json")
+                    return (json_content)
                 }
-                return (json_content)
             } else {
-                text_content <- content(output, as = "text")
-                tsv_content <- read_tsv(text_content)
-                if(filename! = "") {
-                    export_tsv(filename, tsv_content)
+                if(filename != "") {
+                    binary_output <- content(output)
+                    f = file(filename, "wb")
+                    writeBin(binary_output, f)
+                    return (paste("Response written to", filename))
+                } else {
+                    text_content <- content(output, as = "text")
+                    tsv_content <- read_tsv(text_content)
+                    return (tsv_content)
                 }
-                return (tsv_content)
             }
         },
 
@@ -284,20 +279,28 @@ Gen3Submission <- setRefClass("Gen3Submission",
             if(!(fileformat %in% list('json','tsv'))) {
                 stop("Error: File format must be either 'json' or 'tsv'")
             }
-            output <- export_record_helper(program, project, node_type, fileformat)
+            output <- export_node_helper(program, project, node_type, fileformat)
             if(fileformat == 'json') {
-                json_content <- content(output, "parsed", "application/json")
-                if(filename! = "") {
-                    export_json(filename, json_content)
+                if(filename != "") {
+                    binary_output <- content(output)
+                    f = file(filename, "wb")
+                    writeBin(binary_output, f)
+                    return (paste("Response written to", filename))
+                } else {
+                    json_content <- content(output, "parsed", "application/json")
+                    return (json_content)
                 }
-                return (json_content)
             } else {
-                text_content <- content(output, as = "text")
-                tsv_content <- read_tsv(text_content)
-                if(filename! = "") {
-                    export_tsv(filename, tsv_content)
+                if(filename != "") {
+                    binary_output <- content(output)
+                    f = file(filename, "wb")
+                    writeBin(binary_output, f)
+                    return (paste("Response written to", filename))
+                } else {
+                    text_content <- content(output, as = "text")
+                    tsv_content <- read_tsv(text_content)
+                    return (tsv_content)
                 }
-                return (tsv_content)
             }
         },
 
