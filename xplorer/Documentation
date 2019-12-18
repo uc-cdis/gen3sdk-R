@@ -4,6 +4,8 @@ Package: xplorer (pronounced explore R)
 
 This documentation addresses some of the limitations of xplorer for each function (barplotr, pieplotr, and tabler).
 
+Go to the R Project file to make edits/updates: xplorer.Rproj
+
 Barplotr ()
 
 1. When 'y_variable <- dplyr::enquo(y_variable)' is present, the ifelse statement called '#2. barplor - Plot Count' is not evaluated.
