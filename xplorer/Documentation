@@ -1,0 +1,52 @@
+Sophia S. Carryl
+12/18/2019
+Package: xplorer (pronounced explore R)
+
+This documentation addresses some of the limitations of xplorer for each function (barplotr, pieplotr, and tabler).
+
+Go to the R Project file to make edits/updates: xplorer.Rproj
+
+Barplotr ()
+
+1. When 'y_variable <- dplyr::enquo(y_variable)' is present, the ifelse statement called '#2. barplor - Plot Count' is not evaluated.
+The following error is given: Error: stat_boxplot requires the following missing aesthetics: y
+
+I tried the following failed solution:
+
+if (!is.null(y_variable)){
+y_variable <- dplyr::enquo(y_variable)
+}
+
+Note: not putting y_variable in quosures assures that all functions are evaluated. The tradeoff is that the y-axis name will not be what the user writes, but will be 'y' instead.
+
+2. The barplot for the mean of Y with standard error bars does not sort in ascending or descending order.
+
+I tried the following failed solution:
+
+reorder() was used within ggplot and then on the dataframe.
+
+
+3. Interactive plots are all saved. It would be nice if users could specify when and where to save plots.
+
+4. Defense coding still needs implementation so users have meaningful error messages.
+
+
+Pieplotr ()
+
+1. Colors could be coordinated better so nested pieplots are visually pleasant.
+
+2. A cleaning step is required for some of the datasets. This cleaning should be implemented within the function.
+
+For example, I used the following lines to either remove blanks or assigned them to unknown when I load the node (aka data frame) in my workspace:
+
+########### To remove the blanks from disease_type
+BiospecimenData <- BiospecimenData[as.character(BiospecimenData$disease_type)!= "" ,]
+
+########## Rename blanks from disease_type to "Unknown"
+BiospecimenData$disease_type[BiospecimenData$disease_type == ""] <- "Unknown"
+
+Tabler()
+
+1. Header names can be less generic.
+
+2. Tutorial on how to save table should be provided.
