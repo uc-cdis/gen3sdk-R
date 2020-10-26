@@ -109,7 +109,7 @@ with_mock_api({
         negate_params = NULL
         api_url <- paste(endpoint, "/index/index", sep = "")
         expect_GET(
-            GET(api_url, query = list(urls_metadata = urls_meta, metadata = meta, size = size, hash = hash, 
+            GET(api_url, query = list(urls_metadata = urls_meta, metadata = meta, size = size, hash = hash,
                 uploader = uploader, ids = ids, urls = urls, acl = acl, authz = authz, negate_params = negate_params)),
             api_url
         )
@@ -233,4 +233,3 @@ with_mock_api({
         )
     })
 })
-

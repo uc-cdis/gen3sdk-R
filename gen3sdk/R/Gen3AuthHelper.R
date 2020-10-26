@@ -33,7 +33,7 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
             .self$endpoint <- endpoint
             .self$refresh_file <- refresh_file
         },
-        
+
         get_access_token = function() {
 #' @description
 #' This retrieves the access token
@@ -60,7 +60,7 @@ Gen3AuthHelper <- setRefClass("Gen3AuthHelper",
 
         get_auth_value = function() {
 #' @description
-#' This returns the authenication value in 'Bearer <token>' format 
+#' This returns the authenication value in 'Bearer <token>' format
 #' @usage
 #' >>> auth.get_auth_value()
             token <- get_access_token()
