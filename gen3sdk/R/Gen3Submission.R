@@ -40,12 +40,12 @@ Gen3Submission <- setRefClass("Gen3Submission",
         },
 
         create_program = function(json_parameter) {
-#' @description 
+#' @description
 #' Create a program.
-#' @param 
+#' @param
 #' Args:
 #' json (object): The json of the program to create
-#' @usage 
+#' @usage
 #' Examples:
 #' This creates a program in the sandbox commons.
 #' >>> sub.create_program(json_parameter)
@@ -54,20 +54,20 @@ Gen3Submission <- setRefClass("Gen3Submission",
             json_body <- toJSON(json_parameter, auto_unbox = TRUE)
             output <- POST(api_url,
                          add_headers(Authorization = auth_token),
-                         body = json_body, 
+                         body = json_body,
                          encode = 'json'
                         )
             return (output)
         },
 
         create_project = function(program, json_parameter) {
-#' @description 
+#' @description
 #' Create a project.
-#' @param 
+#' @param
 #' Args:
 #'   program (str): The program to create a project on
 #'   json (object): The json of the project to create
-#' @usage 
+#' @usage
 #' Examples:
 #'   This creates a project on the DCF program in the sandbox commons.
 #' >>> sub.create_project("DCF", json)
@@ -76,7 +76,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
             json_body <- toJSON(json_parameter, auto_unbox = TRUE)
             output <- PUT(api_url,
                         add_headers(Authorization = auth_token),
-                        body = json_body, 
+                        body = json_body,
                         encode = 'json'
                        )
             return (output)
@@ -101,7 +101,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
         },
 
         delete_program = function(program) {
-#' @description            
+#' @description
 #' Delete a program.
 #' This deletes an empty program from the commons.
 #' @param
@@ -118,7 +118,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
         },
 
         get_dictionary_node = function(node_type) {
-#' @description            
+#' @description
 #' Returns the dictionary schema for a specific node.
 #' This gets the current json dictionary schema for a specific node type in a commons.
 #' @param
@@ -175,7 +175,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
             json_body <- toJSON(json_parameter, auto_unbox = TRUE)
             output <- PUT(api_url,
                          add_headers(Authorization = auth_token),
-                         body = json_body, 
+                         body = json_body,
                          encode = 'json'
                         )
             return (output)
@@ -326,7 +326,7 @@ Gen3Submission <- setRefClass("Gen3Submission",
             json_body <- toJSON(query_body, auto_unbox = TRUE)
             output <- POST(api_url,
                            add_headers(Authorization = auth_token),
-                           body = json_body, 
+                           body = json_body,
                            encode = 'json'
                           )
             json_content <- content(output)

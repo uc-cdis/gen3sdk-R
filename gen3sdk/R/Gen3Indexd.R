@@ -47,7 +47,7 @@ Gen3Indexd <- setRefClass("Gen3Indexd",
             output <- GET(api_url)
             return (output)
         },
-        
+
         get_system_version = function() {
 #' @description
 #' Returns the version of IndexD
@@ -84,7 +84,7 @@ Gen3Indexd <- setRefClass("Gen3Indexd",
             output <- GET(api_url)
             return (output)
         },
-        
+
         get_global_urls = function(size = NULL, hash = NULL, ids = NULL) {
 #' @description
 #' Get a list of urls that match query params
@@ -116,12 +116,12 @@ Gen3Indexd <- setRefClass("Gen3Indexd",
             body$authz <- list(body$authz)
             json_body <- toJSON(body, auto_unbox = TRUE)
             api_url <- paste(endpoint, "/index/index", sep = "")
-            output <- POST(api_url, add_headers(Authorization = auth_token), 
+            output <- POST(api_url, add_headers(Authorization = auth_token),
                 content_type('application/json'), body = json_body, encode = 'json')
                 return (output)
         },
 
-        get_index = function(urls_meta = NULL, meta = NULL, size = NULL, hash = NULL, uploader = NULL, 
+        get_index = function(urls_meta = NULL, meta = NULL, size = NULL, hash = NULL, uploader = NULL,
                                 ids = NULL, urls = NULL, acl = NULL, authz = NULL, negate_params = NULL) {
 #' @description
 #' Get a list of all records
@@ -144,7 +144,7 @@ Gen3Indexd <- setRefClass("Gen3Indexd",
 #' This retrieves the records with the size filter
 #' >>> ind.get_index(size)
             api_url <- paste(endpoint, "/index/index", sep = "")
-            output <- GET(api_url, query = list(urls_metadata = urls_meta, metadata = meta, size = size, hash = hash, 
+            output <- GET(api_url, query = list(urls_metadata = urls_meta, metadata = meta, size = size, hash = hash,
                             uploader = uploader, ids = ids, urls = urls, acl = acl, authz = authz, negate_params = negate_params))
             return (output)
         },
@@ -308,9 +308,9 @@ Gen3Indexd <- setRefClass("Gen3Indexd",
 #' Retrieves index records by urls metadata
 #' >>> ind.get_query_urls_metadata(key, value)
             api_url <- paste(endpoint, "/_query_urls/metdata/q", sep = "")
-            output <- GET(api_url, query = list(key = key, value = value, url = url, versioned = versioned, 
+            output <- GET(api_url, query = list(key = key, value = value, url = url, versioned = versioned,
                                                     limit = limit, offset = offset))
             return (output)
-        }          
+        }
     )
 )

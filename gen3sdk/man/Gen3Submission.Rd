@@ -47,9 +47,9 @@ Gen3Submission(...)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-new("refObjectGenerator", .Data = function (...) 
-new("Gen3Submission", ...), generator = new("refGeneratorSlot", 
-    .xData = <environment>), className = structure("Gen3Submission", package = "gen3sdk"), 
+new("refObjectGenerator", .Data = function (...)
+new("Gen3Submission", ...), generator = new("refGeneratorSlot",
+    .xData = <environment>), className = structure("Gen3Submission", package = "gen3sdk"),
     package = "gen3sdk")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

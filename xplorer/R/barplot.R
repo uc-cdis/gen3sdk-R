@@ -213,4 +213,3 @@ else if(is.null(y_variable) && isFALSE(MEAN) && isTRUE(Interactive)) {
 
 else { stop("Specify MEAN = FALSE or TRUE; Interactive = TRUE or FALSE")}
 }
-
